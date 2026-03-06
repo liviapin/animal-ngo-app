@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap');
+
+:root {
+  /* Colors - Premium Soft Teal & Warm Orange */
+  --primary-color: #2DD4BF; /* Teal 400 */
+  --primary-hover: #14B8A6; /* Teal 500 */
+  --secondary-color: #FBBF24; /* Amber 400 */
+  --secondary-hover: #F59E0B; /* Amber 500 */
+  
+  --bg-color: #F8FAFC; /* Slate 50 */
+  --surface-color: #FFFFFF;
+  --text-main: #1E293B; /* Slate 800 */
+  --text-muted: #64748B; /* Slate 500 */
+  
+  --border-color: #E2E8F0; /* Slate 200 */
+  
+  /* Status Colors */
+  --status-success: #10B981; /* Emerald 500 */
+  --status-warning: #F59E0B; /* Amber 500 */
+  --status-danger: #EF4444; /* Red 500 */
+  --status-info: #3B82F6; /* Blue 500 */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+  /* Radii */
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: 'Inter', sans-serif;
+}
