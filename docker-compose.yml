@@ -1,0 +1,16 @@
+services:
+  app:
+    build: .
+    container_name: ong-animais
+    ports:
+      - "3002:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - JWT_SECRET=ong-animais-super-secret-key-production
+    volumes:
+      - sqlite-data:/app/server
+    restart: unless-stopped
+
+volumes:
+  sqlite-data:

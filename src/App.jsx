@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import AnimalList from './pages/AnimalList';
 import AnimalProfile from './pages/AnimalProfile';
@@ -54,6 +55,7 @@ const Layout = ({ children }) => {
       <main className="main-content" style={{ padding: isAdmin ? 0 : '0 0' }}>
         {children}
       </main>
+      {!isAdmin && <Footer />}
     </div>
   );
 };

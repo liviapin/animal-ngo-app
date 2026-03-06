@@ -170,6 +170,23 @@ npm run dev
 # → Vite dev server em http://localhost:5173
 ```
 
+### 🐳 Executando com Docker
+
+Você pode subir toda a aplicação (frontend e backend) em um único container de produção usando Docker:
+
+```bash
+# 1. Faça o build e inicie o container (roda em background)
+docker compose up --build -d
+
+# 2. Verifique os logs se quiser confirmar que iniciou corretamente
+docker compose logs -f
+
+# 3. Acesse a aplicação no navegador
+# → http://localhost:3002
+```
+
+> **Nota:** No ambiente Docker, o frontend buildado é servido diretamente pelo Express. Ele está mapeado para a porta **3002** para não conflitar com o servidor de desenvolvimento. Para parar a aplicação, use `docker compose down`.
+
 ### Rotas da Aplicação
 
 | Rota | Acesso | Descrição |

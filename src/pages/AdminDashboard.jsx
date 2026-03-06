@@ -1,17 +1,20 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { LayoutDashboard, Users, Plus, Edit, Trash2, Shield } from 'lucide-react';
-import { animals, ongs, requests, mockUsers } from '../data/mockData';
+import { Link, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Plus, Edit, Trash2, Shield, LogOut, User } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { animals, ongs, requests } from '../data/mockData';
 
 export default function AdminDashboard() {
-    const [currentUser, setCurrentUser] = useState(mockUsers[1]); // Default to ONG Admin
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
 
-    const isGlobal = currentUser.role === 'GLOBAL_ADMIN';
+    // Dados filtrados (ONG admin vê apenas seus dados)
+    const viewAnimals = animals;
+    const viewRequests = requests;
 
-    // Dados filtrados baseados no papel
-    const viewAnimals = isGlobal ? animals : animals.filter(a => a.ongId === currentUser.ongId);
-    const viewRequests = isGlobal ? requests : requests.filter(r => r.ongId === currentUser.ongId);
-    const viewOngs = isGlobal ? ongs : ongs.filter(o => o.id === currentUser.ongId);
+    const handleLogout = () => {
+        logout();
+        navigate('/admin/login');
+    };
 
     return (
         <div className="flex" style={{ minHeight: '100vh', background: 'var(--bg-color)', width: '100%' }}>
@@ -24,25 +27,32 @@ export default function AdminDashboard() {
                 </div>
 
                 <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
-                    <div style={{ marginBottom: '2rem', padding: '1rem', background: 'rgba(255,255,255,0.5)', borderRadius: '0.75rem', border: '1px solid var(--border-color)' }}>
-                        <label style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: 600 }}>Simulador de Login:</label>
-                        <select
-                            className="form-input"
-                            value={currentUser.id}
-                            onChange={(e) => setCurrentUser(mockUsers.find(u => u.id === parseInt(e.target.value)))}
-                            style={{ marginTop: '0.5rem', fontSize: '0.875rem' }}
-                        >
-                            {mockUsers.map(u => (
-                                <option key={u.id} value={u.id}>{u.name} ({u.role})</option>
-                            ))}
-                        </select>
+                    {/* User info */}
+                    <div style={{ marginBottom: '2rem', padding: '1rem', background: 'rgba(255,255,255,0.5)', borderRadius: '0.75rem', border: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{
+                            width: '42px', height: '42px', borderRadius: '50%',
+                            background: 'linear-gradient(135deg, var(--primary-color), #0D9488)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: 'white', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Outfit',
+                            flexShrink: 0
+                        }}>
+                            {user?.name?.charAt(0).toUpperCase() || <User size={20} />}
+                        </div>
+                        <div style={{ overflow: 'hidden' }}>
+                            <p style={{ fontWeight: 600, fontSize: '0.9rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.name || 'Administrador'}</p>
+                            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user?.email}</p>
+                        </div>
                     </div>
 
                     <Link to="/admin" className="btn btn-primary" style={{ justifyContent: 'flex-start', padding: '1rem' }}><LayoutDashboard size={20} /> Visão Geral</Link>
-                    {isGlobal && <button className="btn btn-outline" style={{ justifyContent: 'flex-start', border: 'none', padding: '1rem' }}><Users size={20} /> Gerenciar ONGs</button>}
-                    <button className="btn btn-outline" style={{ justifyContent: 'flex-start', border: 'none', padding: '1rem' }}><Users size={20} /> Relatórios</button>
 
-                    <Link to="/" className="btn btn-outline" style={{ justifyContent: 'flex-start', border: 'none', marginTop: 'auto', padding: '1rem', color: 'var(--status-danger)' }}>Sair / Voltar Site</Link>
+                    <button
+                        onClick={handleLogout}
+                        className="btn btn-outline"
+                        style={{ justifyContent: 'flex-start', border: 'none', marginTop: 'auto', padding: '1rem', color: 'var(--status-danger)', gap: '0.5rem' }}
+                    >
+                        <LogOut size={20} /> Sair da Conta
+                    </button>
                 </div>
             </aside>
 
@@ -50,9 +60,9 @@ export default function AdminDashboard() {
             <main style={{ flex: 1, padding: '3rem 4rem', overflowY: 'auto' }}>
                 <div className="flex justify-between items-center" style={{ marginBottom: '3rem' }}>
                     <div>
-                        <h1 style={{ fontSize: '2.5rem', letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>Bem-vindo, {currentUser.name.split(' ')[0]}</h1>
+                        <h1 style={{ fontSize: '2.5rem', letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>Bem-vindo, {user?.name?.split(' ')[0] || 'Admin'}</h1>
                         <p style={{ color: 'var(--text-muted)', fontSize: '1.125rem' }}>
-                            {isGlobal ? 'Visão global de todas as ONGs e atividades da plataforma.' : `Gerenciando dados da ONG: ${viewOngs[0]?.name}`}
+                            Gerencie os animais e solicitações da sua ONG.
                         </p>
                     </div>
                     <Link to="/admin/animal/novo" className="btn btn-primary" style={{ padding: '1rem 1.5rem' }}><Plus size={20} /> Novo Animal</Link>
@@ -72,17 +82,10 @@ export default function AdminDashboard() {
                         <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--status-warning)', fontFamily: 'Outfit' }}>{viewRequests.length}</span>
                         <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Solicitações Pendentes</span>
                     </div>
-                    {isGlobal ? (
-                        <div className="glass-card flex flex-col items-center justify-center" style={{ padding: '2rem' }}>
-                            <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--status-info)', fontFamily: 'Outfit' }}>{viewOngs.length}</span>
-                            <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>ONGs Parceiras</span>
-                        </div>
-                    ) : (
-                        <div className="glass-card flex flex-col items-center justify-center" style={{ padding: '2rem' }}>
-                            <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--status-info)', fontFamily: 'Outfit' }}>{viewAnimals.filter(a => a.status === 'Lar Temporário').length}</span>
-                            <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Lar Temporário</span>
-                        </div>
-                    )}
+                    <div className="glass-card flex flex-col items-center justify-center" style={{ padding: '2rem' }}>
+                        <span style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--status-info)', fontFamily: 'Outfit' }}>{viewAnimals.filter(a => a.status === 'Lar Temporário').length}</span>
+                        <span style={{ color: 'var(--text-muted)', fontWeight: 500 }}>Lar Temporário</span>
+                    </div>
                 </div>
 
                 {/* Tables area */}
